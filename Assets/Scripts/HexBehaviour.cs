@@ -67,6 +67,9 @@ public class HexBehaviour : MonoBehaviour
     // In Dot.Rotate used B function
     // In Falling used A function
 
+    // Using coroutines to move objects is terrible for performance
+    // Dont use it in the future
+
     #region Function A
     public void SetPosition(Vector3 pos) {
        // if (moving)

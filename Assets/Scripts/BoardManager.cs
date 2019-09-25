@@ -358,8 +358,8 @@ public class BoardManager : MonoBehaviour
 
         // Create New Hex On Top
         int score = gameManager.gameState.Score;
-        
-        if (score > bombScoreThreshold && score % bombScoreThreshold < 16 && bombsReferences.Count == 0) {
+        // Decide if a bomb should be spawned
+        if (score > bombScoreThreshold && score % bombScoreThreshold < gameManager.pointMultiplier * 5 && bombsReferences.Count < 2) {
             CreateBombHex(hex.x, height - 1);
         } else {
             CreateHex(hex.x, height - 1);
@@ -380,7 +380,7 @@ public class BoardManager : MonoBehaviour
         if (canvas)
             canvas.enabled = false;
 
-        // Destroy Game Object
+        // Destroy Game Object after 1 second wait for particles to finish
         Destroy(willBeDestroyed, 1.0f);
     }
 

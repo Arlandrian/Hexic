@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
 
     void HandleInput() {
 #if DEBUG
-        /*
+        
         if (Input.GetMouseButtonDown(0)) {
             firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -89,8 +89,9 @@ public class GameManager : MonoBehaviour
             } else {
                 OnSwipe();
             }
-        }*/
+        }
 #endif
+        /*
         if (Input.touchCount > 0) {
             Touch touch = Input.GetTouch(0);
 
@@ -114,7 +115,7 @@ public class GameManager : MonoBehaviour
                     }
                     break;
             }
-        }
+        }*/
     }
     // Makes a circle cast and takes the nearest to the touch
     void OnTouch() {
