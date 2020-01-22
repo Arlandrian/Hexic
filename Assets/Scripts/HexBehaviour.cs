@@ -22,7 +22,7 @@ public class HexBehaviour : MonoBehaviour
     [SerializeField]
     private Vector3 targetRot;
     public float rotationTime = 1.0f;
-    private float rotationT=0.0f;
+    
 
     // Private References
     private BoardManager boardManager;
@@ -33,26 +33,14 @@ public class HexBehaviour : MonoBehaviour
     {
         targetPosition = transform.position;
         targetRotation = transform.rotation;
-        boardManager = GameObject.FindGameObjectWithTag("BoardManager").GetComponent<BoardManager>();
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        boardManager = BoardManager.Instance;
+        gameManager = GameManager.Instance;
         particles = GetComponent<ParticleSystem>();
+
+        waitForEndOfFrame = new WaitForEndOfFrame();
     }
+    WaitForEndOfFrame waitForEndOfFrame;
 
-    private void Update() {
-        /*
-        switch (state) {
-            case HexState.Idle:
-
-                break;
-            case HexState.Falling:
-
-                break;
-            case HexState.Rotating:
-
-                break;
-
-        }*/
-    }
     // The are two case
     // One: Falling
     // Two: Rotating
@@ -61,7 +49,7 @@ public class HexBehaviour : MonoBehaviour
     // After Moving to the target, Check the board
     // If there is match stop and increment the MovementCount in GM
     // If there is no match Rotate the dot again and check the board 2 more times
-    // If there is no match after 3 rotating then stop, DONT increment the MovementCouint in GM
+    // If there is no match after 3 rotating then stop, DONT increment the MovementCount in GM
 
     // Used 2 Function overriding for two different case
     // In Dot.Rotate used B function
@@ -85,7 +73,7 @@ public class HexBehaviour : MonoBehaviour
         while (transform.position != targetPosition) {
             transform.position = Vector3.Lerp(transform.position, targetPosition, moveT);
             moveT += Time.deltaTime / moveTime;
-            yield return new WaitForEndOfFrame();
+            yield return waitForEndOfFrame;//new WaitForEndOfFrame();
         }
         MoveEnded();
     }
@@ -111,7 +99,7 @@ public class HexBehaviour : MonoBehaviour
         while (transform.position != targetPosition) {
             transform.position = Vector3.Lerp(transform.position, targetPosition, moveT);
             moveT += Time.deltaTime / moveTime;
-            yield return new WaitForEndOfFrame();
+            yield return waitForEndOfFrame;//new WaitForEndOfFrame();
         }
         MoveEndedB();
     }
@@ -131,24 +119,14 @@ public class HexBehaviour : MonoBehaviour
             }
         } else {
             gameManager.rotationCount = 3;
-            gameManager.gameState.MovementCount++;
+            gameManager.IncrementMovementCount();
             foreach(BombBehaviour bb in boardManager.bombsReferences) {
-                bb.timeOut--;
+                bb.DecrementCountDown();
             }
         }
     }
     #endregion
-    // Maybe Activated in future
-    public void SetRotation(Vector3 rotation) {
-        /*
-        if (rotating)
-            return;
-        targetRot = transform.rotation.eulerAngles + rotation;
-        StartCoroutine(Rotate());*/
-    }
 
-    private void RotationEnded() {
-    }
 
     private bool CheckDownIsEmpty() {
         if (hexReference.y == 0)

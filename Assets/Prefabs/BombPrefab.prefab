@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 478508360377193667}
   - component: {fileID: 478508360377193666}
   m_Layer: 0
-  m_Name: TimeOut
+  m_Name: CountDownText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,8 +185,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00c639348e468d94e839ef24f0bba26e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeOutText: {fileID: 478508360377193666}
-  timeOut: 9
+  countDownText: {fileID: 478508360377193666}
+  countDown: 9
 --- !u!1 &478508361162235280
 GameObject:
   m_ObjectHideFlags: 0

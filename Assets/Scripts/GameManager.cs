@@ -4,33 +4,23 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
+    [Header("Settings")]
     public int pointMultiplier = 5;
+    [SerializeField] private float circleCastRadius = 1.0f;
+    [SerializeField] private float touchSwipeDistanceThreshold = 0.5f;
 
-    public float circleCastRadius = 1.0f;
-
-    public float touchSwipeDistanceThreshold = 0.5f;
-
-    public GameObject lastSelectedDot = null;
-
-    public BoardManager boardManager;
 
     [Header("For Debug")]
     public float timeScale=1.0f;
     [HideInInspector]
-    public bool lastRotationDirection;//true clockWise, fase cClockWise
+    public bool lastRotationDirection;//true clockWise, false cClockWise
     [HideInInspector]
     public int rotationCount;
 
     public GameState gameState;
 
-
-    [Header("PublicReferences")]
-    public Text scoreText;
-    public Text movementText;
-    public GameObject gameOverUI;
-    public Text finalScoreText;
     [Space]
 
     public bool bombSpawn;
@@ -43,14 +33,14 @@ public class GameManager : MonoBehaviour
     private Vector2 firstTouchPosition;
     private Vector2 finalTouchPosition;
 
+    GameObject lastSelectedDot = null;
+
     private void Awake() {
-        boardManager = GameObject.FindGameObjectWithTag("BoardManager").GetComponent<BoardManager>();
         gameState.Init();
     }
 
-    void Update()
-    {
-#if DEBUG
+    void Update() {
+#if UNITY_EDITOR
         Time.timeScale = timeScale;
         if (lastSelectedDot) {
             Debug.DrawLine(lastSelectedDot.transform.position, firstTouchPosition,Color.red);
@@ -58,23 +48,13 @@ public class GameManager : MonoBehaviour
 
         }
 #endif
-        if (!boardManager.IsBoardChanging())
+        if (!BoardManager.Instance.IsBoardChanging())
             HandleInput();
-
-        scoreText.text = "Score: "+gameState.Score.ToString();
-        movementText.text = gameState.MovementCount.ToString();
-        
-    }
-
-    private void OnDrawGizmos() {
-        if (Input.touchCount > 0) {
-            Gizmos.DrawWireSphere(firstTouchPosition, circleCastRadius);
-        }
     }
 
     void HandleInput() {
-#if DEBUG
-        
+#if UNITY_EDITOR || UNITY_STANDALONE
+
         if (Input.GetMouseButtonDown(0)) {
             firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
@@ -90,8 +70,8 @@ public class GameManager : MonoBehaviour
                 OnSwipe();
             }
         }
-#endif
-        /*
+#elif UNITY_ANDROID || UNITY_IOS
+        
         if (Input.touchCount > 0) {
             Touch touch = Input.GetTouch(0);
 
@@ -115,7 +95,9 @@ public class GameManager : MonoBehaviour
                     }
                     break;
             }
-        }*/
+        }
+
+#endif
     }
     // Makes a circle cast and takes the nearest to the touch
     void OnTouch() {
@@ -177,6 +159,19 @@ public class GameManager : MonoBehaviour
         rotationCount++;
     }
 
+    public void AddScore(int score)
+    {
+        gameState.Score += score;
+        UIManager.Instance.ScoreChanged();
+    }
+
+    public void IncrementMovementCount()
+    {
+        gameState.MovementCount++;
+        UIManager.Instance.MovementCountChanged();
+    }
+
+
     public void GameOver() {
         if (!isGameOver) {
             StartCoroutine(ExplodeAllHexagons());
@@ -187,9 +182,9 @@ public class GameManager : MonoBehaviour
     private IEnumerator ExplodeAllHexagons() {
         lastSelectedDot.SetActive(false);
         isGameOver = true;
-        Hex[,] board = boardManager.board;
+        Hex[,] board = BoardManager.Instance.board;
         foreach (Hex hex in board) {
-            boardManager.DestroyHex(hex);
+            BoardManager.Instance.DestroyHex(hex);
             yield return new WaitForSeconds(0.1f);
         }
         //Game Over UI
@@ -197,11 +192,9 @@ public class GameManager : MonoBehaviour
     }
 
     private void ShowGameOverUI() {
-        gameOverUI.SetActive(true);
-        finalScoreText.text = gameState.Score.ToString();
 
-        // Animation will start after enable
-
+        UIManager.Instance.ShowGameOver();
+        // Animation will start after gameobject activated
     }
 
     public void RestartGame() {
@@ -210,6 +203,12 @@ public class GameManager : MonoBehaviour
 
     static float SqrDistance(Vector2 a, Vector2 b) {
         return Mathf.Pow(b.x - a.x, 2) + Mathf.Pow(b.y - a.y, 2);
+    }
+
+    private void OnDrawGizmos() {
+        if (Input.touchCount > 0) {
+            Gizmos.DrawWireSphere(firstTouchPosition, circleCastRadius);
+        }
     }
 }
 [System.Serializable]

@@ -5,25 +5,26 @@ using UnityEngine.UI;
 
 public class BombBehaviour : MonoBehaviour
 {
-    public Text timeOutText;
-    public int timeOut = 9;
-    private GameManager gm;
-    void Start()
+    [SerializeField] private Text countDownText =null;
+    [SerializeField] private int countDown = 9;
+
+    public void Init(int startingCountDown)
     {
-        gm = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        countDown = startingCountDown;
     }
 
-    void Update()
-    {
-        if (timeOut <= 0) {
-            timeOut = 0;
-            gm.GameOver();
+    public void DecrementCountDown() {
+        countDown--;
+        countDownText.text = countDown.ToString();
+        if (countDown <= 0) {
+            countDown = 0;
+            GameManager.Instance.GameOver();
         }
-        timeOutText.text = timeOut.ToString();
+
     }
 
     private void OnDestroy() {
-        gm.gameState.Score += 15;
-        gm.boardManager.bombsReferences.Remove(this);
+        GameManager.Instance.AddScore(15);
+        BoardManager.Instance.bombsReferences.Remove(this);
     }
 }

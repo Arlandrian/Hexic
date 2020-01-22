@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BoardManager : MonoBehaviour
+public class BoardManager : Singleton<BoardManager>
 {
     // Square root of three
     private const float sqrtThree = 1.732050807f;
 
-    public int bombStartingTimeOut = 9;
+    public int bombStartingCountDown = 9;
     public int bombScoreThreshold = 100;
 
     public float hexEdgeLength = 0.54f;
@@ -55,7 +55,7 @@ public class BoardManager : MonoBehaviour
 
     private GameManager gameManager;
     void Start() {
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        gameManager = GameManager.Instance;
         GenerateSockets();
 
         GenerateHexes();
@@ -64,11 +64,6 @@ public class BoardManager : MonoBehaviour
         // If there are matching hexes changes them at the start
         RefreshMatchingHexesStart();
     }
-
-    void Update() {
-
-    }
-
 
     public bool IsBoardChanging() {
         foreach (Hex hex in board) {
@@ -117,6 +112,7 @@ public class BoardManager : MonoBehaviour
             }
         }
     }
+
     void GenerateHexes() {
 
         board = new Hex[width, height];
@@ -132,6 +128,7 @@ public class BoardManager : MonoBehaviour
         }
 
     }
+
     // Dots will be the master and they'll each have three slaves 
     // that are the sockets position on board that will be controlled by the master dot
     void GenerateDots() {
@@ -324,7 +321,7 @@ public class BoardManager : MonoBehaviour
             foreach (Vector2Int pos in matchingHexesPositions) {
                 ExplodeHexagon(board[pos.x, pos.y]);
             }
-            gameManager.gameState.Score += matchingHexesPositions.Count * gameManager.pointMultiplier;
+            gameManager.AddScore(matchingHexesPositions.Count * gameManager.pointMultiplier);
         }
         return isThereAnyMatch;
     }
@@ -417,7 +414,7 @@ public class BoardManager : MonoBehaviour
 
         BombBehaviour bb = bombGO.GetComponent<BombBehaviour>();
         bombsReferences.Add(bb);
-        bb.timeOut = bombStartingTimeOut;
+        bb.Init(bombStartingCountDown);
         
         hexBehaviour.SetPosition(socket.transform.position);
 

@@ -16,16 +16,10 @@ public class DotBehaviour : MonoBehaviour
     public bool rotating = false;
 
     private BoardManager boardManager;
-    private GameManager gameManager;
 
     private void Start() {
-        boardManager = GameObject.FindGameObjectWithTag("BoardManager").GetComponent<BoardManager>();
-        gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+        boardManager = BoardManager.Instance;
 
-    }
-
-    private void Update() {
-       
     }
 
     public void Select() {
@@ -85,9 +79,9 @@ public class DotBehaviour : MonoBehaviour
                 hexBTop.SetPosition(hexTopTargetPosition, this);
                 hexBBot.SetPosition(hexBotTargetPosition, this);
 
-                hexBSide.SetRotation(Vector3.forward*60f);
-                hexBTop.SetRotation(Vector3.forward *60f);
-                hexBBot.SetRotation(Vector3.forward *60f);
+                // hexBSide.SetRotation(Vector3.forward*60f);
+                // hexBTop.SetRotation(Vector3.forward *60f);
+                // hexBBot.SetRotation(Vector3.forward *60f);
 
                 transform.RotateAround(transform.position, transform.forward, -120.0f);
             } else {
@@ -112,9 +106,9 @@ public class DotBehaviour : MonoBehaviour
                 hexBTop.SetPosition(hexTopTargetPosition, this);
                 hexBBot.SetPosition(hexBotTargetPosition, this);
 
-                hexBSide.SetRotation(Vector3.forward * -60f);
-                hexBTop.SetRotation(Vector3.forward * -60f);
-                hexBBot.SetRotation(Vector3.forward * -60f);
+                // hexBSide.SetRotation(Vector3.forward * -60f);
+                // hexBTop.SetRotation(Vector3.forward * -60f);
+                // hexBBot.SetRotation(Vector3.forward * -60f);
 
                 transform.RotateAround(transform.position, transform.forward, 120.0f);
             }
@@ -144,9 +138,9 @@ public class DotBehaviour : MonoBehaviour
                 hexBTop.SetPosition(hexTopTargetPosition, this);
                 hexBBot.SetPosition(hexBotTargetPosition, this);
 
-                hexBSide.SetRotation(Vector3.forward * -60f);
-                hexBTop.SetRotation(Vector3.forward * -60f);
-                hexBBot.SetRotation(Vector3.forward * -60f);
+                // hexBSide.SetRotation(Vector3.forward * -60f);
+                // hexBTop.SetRotation(Vector3.forward * -60f);
+                // hexBBot.SetRotation(Vector3.forward * -60f);
 
 
                 transform.RotateAround(transform.position, transform.forward, 120.0f);
@@ -176,9 +170,9 @@ public class DotBehaviour : MonoBehaviour
                 hexBTop.SetPosition(hexTopTargetPosition, this);
                 hexBBot.SetPosition(hexBotTargetPosition, this);
 
-                hexBSide.SetRotation(Vector3.forward * 60f);
-                hexBTop.SetRotation(Vector3.forward * 60f);
-                hexBBot.SetRotation(Vector3.forward * 60f);
+                // hexBSide.SetRotation(Vector3.forward * 60f);
+                // hexBTop.SetRotation(Vector3.forward * 60f);
+                // hexBBot.SetRotation(Vector3.forward * 60f);
 
                 transform.RotateAround(transform.position, transform.forward, -120.0f);
             }
